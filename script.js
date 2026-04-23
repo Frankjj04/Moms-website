@@ -131,7 +131,7 @@ document.querySelectorAll('.service-card, .testi-card, .gallery__item').forEach(
 const bookingForm = document.getElementById('bookingForm');
 const toast = document.getElementById('toast');
 
-bookingForm.addEventListener('submit', (e) => {
+bookingForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
   // Basic validation
@@ -151,14 +151,45 @@ bookingForm.addEventListener('submit', (e) => {
     return;
   }
 
-  // Save lead to localStorage
-  saveLead();
+  // Disable button while sending
+  const submitBtn = bookingForm.querySelector('button[type="submit"]');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending…';
 
-  // Show toast
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 4000);
+  // Build form data for Formspree
+  const data = {
+    name: `${document.getElementById('fname').value} ${document.getElementById('lname').value}`.trim(),
+    phone: document.getElementById('phone').value,
+    email: document.getElementById('email').value || 'Not provided',
+    service: document.getElementById('service').value,
+    preferredDate: document.getElementById('date').value,
+    notes: document.getElementById('notes').value || 'None',
+    newsletter: document.getElementById('newsletter').checked ? 'Yes' : 'No',
+  };
 
-  bookingForm.reset();
+  try {
+    const res = await fetch('https://formspree.io/f/meevvgkg', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(data),
+    });
+
+    if (res.ok) {
+      // Save to localStorage as backup
+      saveLead();
+      // Show success toast
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 4000);
+      bookingForm.reset();
+    } else {
+      alert('Something went wrong. Please call us directly at (614) 674-0328.');
+    }
+  } catch {
+    alert('Network error. Please call us directly at (614) 674-0328.');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Request Appointment ✦';
+  }
 });
 
 // Remove error on input
