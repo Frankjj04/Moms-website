@@ -45,23 +45,6 @@ if (dateInput) {
   dateInput.min = today.toISOString().split('T')[0];
 }
 
-// ---- VISITOR COUNTER (global — counts every visit) ----
-async function trackVisitor() {
-  const el = document.getElementById('visitor-count');
-  if (!el) return;
-  try {
-    const res = await fetch('https://api.countapi.xyz/hit/mjcuts.com/visits');
-    const data = await res.json();
-    if (data && data.value) {
-      el.textContent = data.value.toLocaleString();
-    }
-  } catch {
-    // Fallback — show a realistic number if API is unavailable
-    el.textContent = '500+';
-  }
-}
-
-trackVisitor();
 
 // ---- COUNT-UP ANIMATION ----
 function countUp(el, target, duration = 1800) {
