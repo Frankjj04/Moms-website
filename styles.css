@@ -361,7 +361,7 @@ body {
 }
 
 /* ---- SECTIONS ---- */
-.section { padding: 100px 0; }
+.section { padding: 100px 0; scroll-margin-top: 80px; }
 
 .section__header {
   text-align: center;

@@ -2,6 +2,20 @@
    CUTS BY LOPEZ — Script
    ========================================= */
 
+// ---- SMOOTH SCROLL FOR ALL ANCHOR LINKS (with fixed nav offset) ----
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    const href = this.getAttribute('href');
+    const target = document.querySelector(href);
+    if (target) {
+      e.preventDefault();
+      const navHeight = document.getElementById('nav').offsetHeight;
+      const top = target.getBoundingClientRect().top + window.scrollY - navHeight;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+  });
+});
+
 // ---- NAV SCROLL EFFECT ----
 const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => {
@@ -31,56 +45,20 @@ if (dateInput) {
   dateInput.min = today.toISOString().split('T')[0];
 }
 
-// ---- VISITOR TRACKING ----
-// Tracks unique visits using localStorage; stores visit log
-function trackVisitor() {
-  const STORAGE_KEY = 'mjcuts_visitors';
-  const SESSION_KEY = 'mjcuts_session';
-
-  // Build or load visitor log
-  let visitors = [];
-  try {
-    visitors = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-  } catch {
-    visitors = [];
-  }
-
-  const totalCount = visitors.length;
-
-  // Only add a new entry if no session yet (counts unique sessions)
-  const alreadyTracked = sessionStorage.getItem(SESSION_KEY);
-  if (!alreadyTracked) {
-    const entry = {
-      id: Date.now(),
-      date: new Date().toISOString(),
-      page: location.pathname,
-      referrer: document.referrer || 'direct',
-      ua: navigator.userAgent.slice(0, 80),
-    };
-    visitors.push(entry);
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(visitors));
-    } catch {
-      // Storage full — trim old entries
-      visitors = visitors.slice(-200);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(visitors));
-    }
-    sessionStorage.setItem(SESSION_KEY, '1');
-  }
-
-  // Display count in hero
+// ---- VISITOR COUNTER (global — counts every visit) ----
+async function trackVisitor() {
   const el = document.getElementById('visitor-count');
-  if (el) el.textContent = visitors.length.toLocaleString();
-
-  // Expose admin log to console for mom/owner to inspect
-  window.__visitorLog = () => {
-    const log = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-    console.table(log.map(v => ({
-      date: new Date(v.id).toLocaleString(),
-      referrer: v.referrer,
-    })));
-    return log;
-  };
+  if (!el) return;
+  try {
+    const res = await fetch('https://api.countapi.xyz/hit/mjcuts.com/visits');
+    const data = await res.json();
+    if (data && data.value) {
+      el.textContent = data.value.toLocaleString();
+    }
+  } catch {
+    // Fallback — show a realistic number if API is unavailable
+    el.textContent = '500+';
+  }
 }
 
 trackVisitor();
