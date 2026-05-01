@@ -45,6 +45,7 @@ body {
 
 .gold { color: var(--gold); }
 .gold-scissor { filter: sepia(1) saturate(8) hue-rotate(5deg) brightness(1.1); }
+.gold-pin { filter: sepia(1) saturate(10) hue-rotate(10deg) brightness(1.2); }
 
 .btn {
   display: inline-flex;
