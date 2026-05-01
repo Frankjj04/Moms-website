@@ -689,6 +689,59 @@ body {
   align-items: start;
 }
 
+/* Booksy CTA Card */
+.booksy__cta {
+  display: flex;
+  align-items: flex-start;
+}
+
+.booksy__card {
+  background: var(--dark-2);
+  border: 1px solid rgba(255, 224, 0, 0.2);
+  border-radius: var(--radius-lg);
+  padding: 48px 40px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.booksy__icon {
+  font-size: 3rem;
+}
+
+.booksy__card h3 {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  color: var(--white);
+}
+
+.booksy__card p {
+  color: var(--gray);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.booksy__perks {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.booksy__perks li {
+  color: var(--off-white);
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.booksy__perks li::first-letter {
+  color: var(--gold);
+  font-weight: 700;
+}
+
 .booking__form {
   background: var(--dark-2);
   border: 1px solid rgba(255,255,255,0.12);
